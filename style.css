@@ -1,0 +1,295 @@
+/* ============================================
+   Stopwatch — Design tokens
+   (shares the palette/type system with the
+   Tic-Tac-Toe and To-Do List apps)
+   ============================================ */
+:root {
+  --bg-top: #2a1b4d;
+  --bg-bottom: #0f0a1f;
+  --card: #241b3d;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --text: #f1edfb;
+  --muted: #b8aed6;
+
+  --accent: #ffb648;      /* running / primary */
+  --accent-glow: rgba(255, 182, 72, 0.4);
+
+  --done: #4fd8c4;        /* lap / fastest split */
+  --done-glow: rgba(79, 216, 196, 0.4);
+
+  --danger: #ff6f6f;       /* slowest split */
+
+  --row-bg: #2e2350;
+  --row-bg-hover: #372a5e;
+  --track: #392c5c;
+
+  --radius-lg: 28px;
+  --radius-md: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 5vw, 40px);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 25% 15%, var(--bg-top), var(--bg-bottom) 65%);
+}
+
+/* ============================================
+   Card
+   ============================================ */
+.app {
+  width: 100%;
+  max-width: 380px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 5vw, 32px);
+  text-align: center;
+  box-shadow:
+    0 30px 60px -25px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+header h1 {
+  font-family: "Baloo 2", system-ui, sans-serif;
+  font-size: clamp(26px, 6vw, 32px);
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  margin: 0 0 4px;
+  background: linear-gradient(90deg, var(--accent), var(--done));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ============================================
+   Dial
+   ============================================ */
+.dial-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto 24px;
+  aspect-ratio: 1 / 1;
+}
+
+.dial {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.dial-track {
+  fill: none;
+  stroke: var(--track);
+  stroke-width: 10;
+}
+
+.dial-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 540.35; /* 2 * PI * 86 */
+  stroke-dashoffset: 540.35;
+  transition: stroke 0.2s ease;
+}
+
+.dial-progress.running {
+  stroke: var(--accent);
+}
+
+.dial-progress.paused {
+  stroke: var(--muted);
+}
+
+.time-display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Baloo 2", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 8vw, 36px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+   Controls
+   ============================================ */
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.btn {
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent), var(--done));
+  color: #1a1330;
+  box-shadow: 0 10px 20px -8px var(--accent-glow);
+}
+
+.btn.primary.running {
+  background: linear-gradient(90deg, #ffd27a, var(--accent));
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--text);
+}
+
+.btn.ghost.reset-mode {
+  border-color: rgba(255, 111, 111, 0.4);
+  color: var(--danger);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--done);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Lap list
+   ============================================ */
+.lap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 38vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.lap-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--row-bg);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 14px;
+  animation: enter 0.2s ease;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lap-row .lap-num {
+  flex-shrink: 0;
+  width: 26px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.lap-row .lap-split {
+  flex: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.lap-row .lap-total {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.lap-row.fastest .lap-split {
+  color: var(--done);
+  font-weight: 700;
+}
+
+.lap-row.slowest .lap-split {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Empty state */
+.empty-state {
+  display: none;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 10px;
+}
+
+.empty-state.show {
+  display: block;
+}
+
+/* Scrollbar */
+.lap-list::-webkit-scrollbar {
+  width: 6px;
+}
+.lap-list::-webkit-scrollbar-thumb {
+  background: var(--row-bg-hover);
+  border-radius: 999px;
+}
+
+/* ============================================
+   Responsive tweaks
+   ============================================ */
+@media (max-width: 340px) {
+  .app {
+    padding: 18px;
+  }
+  .controls {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition: none !important;
+  }
+}
